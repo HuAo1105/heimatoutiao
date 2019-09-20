@@ -67,14 +67,17 @@ export default {
             method: 'post',
             data: this.formdata
           }).then(result => {
-            window.localStorage.setItem('user-token', result.data.data.token)
+            // console.log(result)
+            // 将token令牌保存在localstorage里
+            window.localStorage.setItem('user-token', result.data.token)
             this.$router.push('/')
-          }).catch(() => {
-            this.$message({
-              type: 'warning',
-              message: '您输入的有误'
-            })
           })
+          // .catch(() => {
+          //   this.$message({
+          //     type: 'warning',
+          //     message: '您输入的有误'
+          //   })
+          // })
         }
       })
     }
@@ -92,6 +95,7 @@ export default {
     height: 100vh;
     /* 自适应屏幕 */
     background-size: cover;
+    // 使用flex布局来调整在屏幕上的位置
     display: flex;
     align-items: center;
     justify-content: center;
