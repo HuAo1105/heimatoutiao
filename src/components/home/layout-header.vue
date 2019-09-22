@@ -4,24 +4,24 @@
       <i class="el-icon-s-unfold"></i>
       <span class="title">江苏传值播客教育科技股份有限公司</span>
     </el-col>
-    <el-col :span='4'>
+    <el-col :span='4' style="text-align:right;margin-right:20px">
       <!-- 这个src这样写是一个字符串 -->
       <!-- <img class="user-img" src="formdata.photo" alt=""> -->
       <!-- src里边的路径经过vue转化成base64；
       如果没有formdata.photo 的时候，userImg只是一个本地路径，需要加一个require将本地路径边为base64 -->
       <img class="user-img" :src="formdata.photo ? formdata.photo : userImg" alt="">
       <!-- 在整个下拉选项注册一个点击事件 -->
-      <el-dropdown trigger="click" @command='handleCommand'>
-      <span class="el-dropdown-link">
-        {{formdata.name}}<i class="el-icon-arrow-down el-icon--right"></i>
-      </span>
-      <!-- 具名插槽 -->
-      <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item command='userMsg'>个人信息</el-dropdown-item>
-        <el-dropdown-item command='gitAddress'>git地址</el-dropdown-item>
-        <el-dropdown-item command='logOut'>退出</el-dropdown-item>
-      </el-dropdown-menu>
-    </el-dropdown>
+      <el-dropdown trigger="click" @command='handleCommand' style="cursor: pointer;">
+        <span class="el-dropdown-link">
+          {{formdata.name}}<i class="el-icon-arrow-down el-icon--right"></i>
+        </span>
+        <!-- 具名插槽 -->
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item command='userMsg'>个人信息</el-dropdown-item>
+          <el-dropdown-item command='gitAddress'>git地址</el-dropdown-item>
+          <el-dropdown-item command='logOut'>退出</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
     </el-col>
   </el-row>
 </template>

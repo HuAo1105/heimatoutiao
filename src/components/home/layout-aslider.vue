@@ -3,12 +3,16 @@
     <div class="title">
       <img src="../../assets/images/logo_admin.png" alt="">
     </div>
+    <!-- 这个router表示是否使用vue-router模式
+    index相当于view-link里边的to属性-->
+    <!-- 值为布尔值 -->
     <el-menu
         :router='true'
         background-color="#353b4e"
         text-color="#adafb5"
         active-text-color="#ffd04b"
-        class="menu">
+        class="menu"
+        style="border-right:0">
         <!-- 首页 -->
         <el-menu-item index="/home">
           <i class="el-icon-s-home"></i>
@@ -49,7 +53,6 @@
 </template>
 
 <script>
-// import router from '../../router'
 export default {
 }
 </script>
@@ -66,9 +69,6 @@ export default {
     img {
       height: 30px;
     }
-  }
-  .menu {
-    border-right: 1px;
   }
 }
 

@@ -2,6 +2,7 @@ import axios from 'axios'
 import vue from 'vue'
 import router from '../permission' // 引入router，所以下边可以直接使用router
 import { Message } from 'element-ui'
+import jsonBigint from 'json-bigint' // 引入处理最大安全值的第三方模块
 // 给地址设置常态值
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0'
 // 请求拦截
@@ -16,6 +17,12 @@ axios.interceptors.request.use(function (config) {
   // 对请求失败做处理
   return Promise.reject(error)
 })
+// 使用json-bigint处理相应回来的数据
+// 对 data 进行任意转换处理
+axios.defaults.transformResponse = [function (data) {
+  // 对 data 进行任意转换处理
+  return jsonBigint.parse(data)
+}]
 // 响应拦截
 // 这个response就是组件里的result，所以在这里拦截返回的是response.data
 // 后边只写一个result.data就可以了
@@ -52,6 +59,7 @@ axios.interceptors.response.use(function (response) {
       break
   }
   // 未知错误
+  // 调用方法
   Message({ message })// 将:message省略了
   // 在这里将错误都判断了，返回一个promise对象，后边的catch就不用写了
   // 因为返回的这个对象没有reject是一个空，所以后边的catch不执行

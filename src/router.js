@@ -24,9 +24,12 @@ export default new Router({
       }, {
         path: '/home/articles'
       }, {
-        path: '/home/comment'
+        path: 'comment', //  两种写法都可以
+        // path: 'comment',
+        component: () => import('./views/comment')
       }, {
-        path: '/home/meterial'
+        path: 'material',
+        component: () => import('./views/material')
       }, {
         path: '/home/fans'
       }, {
