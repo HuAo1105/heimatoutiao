@@ -141,7 +141,7 @@ export default {
   padding: 0;
   .item{
     margin: 30px;
-    width: 190px;
+    width: 195px;
     height: 220px;
     .item-img{
       width: 150px;

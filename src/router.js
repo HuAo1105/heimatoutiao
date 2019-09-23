@@ -20,9 +20,11 @@ export default new Router({
         path: '',
         component: Main
       }, {
-        path: '/home/publish'
+        path: 'publish',
+        component: () => import('./views/publish')
       }, {
-        path: '/home/articles'
+        path: 'articles',
+        component: () => import('./views/article')
       }, {
         path: 'comment', //  两种写法都可以
         // path: 'comment',
