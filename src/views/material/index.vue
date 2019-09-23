@@ -13,8 +13,8 @@
           <el-card v-for='item in list' :key='item.id' class="item">
             <img :src="item.url" alt="" class="item-img">
             <div class="operate">
-              <i :style="{color: item.is_collected ? 'red' : '#000'}" class="el-icon-star-on"></i>
-              <i class="el-icon-delete-solid"></i>
+              <i @click='collectOrCancel(item)' :style="{color: item.is_collected ? 'red' : '#000'}" class="el-icon-star-on"></i>
+              <i @click='delImg(item.id)' class="el-icon-delete-solid"></i>
             </div>
           </el-card>
         </div>
@@ -63,6 +63,31 @@ export default {
     }
   },
   methods: {
+    // 删除图片素材
+    delImg (id) {
+      this.$confirm('您确定要该图片吗？').then(() => {
+        this.$axios({
+          url: `/user/images/${id}`,
+          method: 'delete'
+        }).then(result => {
+          this.getData()
+        })
+      })
+    },
+    // 取消收藏
+    collectOrCancel (item) {
+      let mess = item.is_collected ? '取消' : ''
+      this.$confirm(`您确定要${mess}收藏该图片吗`).then(() => {
+        this.$axios({
+          url: `/user/images/${item.id}`,
+          method: 'put',
+          data: { collect: !item.is_collected }
+        }).then(() => {
+          this.getData()
+        })
+      })
+    },
+    // 上传图片
     uploadImg (params) {
       console.log(params)
       // 由于得上传文件，所以要使用new FormData
@@ -85,6 +110,7 @@ export default {
       this.pagination.currentPage = 1
       this.getData()
     },
+    // 获取数据
     getData () {
       this.loading = true
       this.$axios({
@@ -126,12 +152,8 @@ export default {
       height: 30px;
       margin-top: 5px;
       line-height: 30px;
-      .el-icon-star-on{
-        margin-left: 20px;
-      }
-      .el-icon-delete-solid{
-        margin-left: 60px;
-      }
+      display: flex;
+      justify-content: space-around;
     }
   }
 }
@@ -139,6 +161,7 @@ export default {
   text-align: center;
 }
 .upload-img{
+  z-index:999;
   position: absolute;
   right: 40px;
   margin-top: -8px;

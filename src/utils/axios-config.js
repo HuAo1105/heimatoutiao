@@ -21,7 +21,7 @@ axios.interceptors.request.use(function (config) {
 // 对 data 进行任意转换处理
 axios.defaults.transformResponse = [function (data) {
   // 对 data 进行任意转换处理
-  return jsonBigint.parse(data)
+  return data ? jsonBigint.parse(data) : {}
 }]
 // 响应拦截
 // 这个response就是组件里的result，所以在这里拦截返回的是response.data
