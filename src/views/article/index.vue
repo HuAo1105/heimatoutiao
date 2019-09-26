@@ -38,7 +38,7 @@
       </el-form-item>
     </el-form>
     <!-- 内容 -->
-    <div class="text">共找到55080条符合条件的内容</div>
+    <div class="text">共找到{{page.total}}条符合条件的内容</div>
     <!-- 大盒子 -->
     <div class="msgList" v-for='(item,index) in list' :key='index'>
       <!-- 左侧 -->
@@ -52,7 +52,7 @@
       </div>
       <!-- 右侧 -->
       <div class="right">
-        <span>
+        <span @click='modifyArticle(item.id)' style="cursor:pointer">
           <i class="el-icon-edit">修改</i>
         </span>
         <span @click="delArticle(item.id)" style="cursor:pointer">
@@ -99,10 +99,13 @@ export default {
     }
   },
   methods: {
+    // 当点击页码时，将最新的页码给了当前当前页
+    // 带着条件去分页
     currentPage (newPage) {
       this.page.currentPage = newPage
       this.allCondition()
     },
+    // 当改变条件时，从第一页开始显示
     changeCondition () {
       this.page.currentPage = 1
       this.allCondition()
@@ -153,6 +156,10 @@ export default {
         // console.log(result)
         this.channels = result.data.channels
       })
+    },
+    // 修改文章
+    modifyArticle (id) {
+      this.$router.push(`/home/publish/${id.toString()}`)
     }
   },
   // 因为状态那返回的是数字，所以定义一个过滤器

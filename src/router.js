@@ -20,22 +20,33 @@ export default new Router({
         path: '',
         component: Main
       }, {
+        // 发布文章
+        path: 'publish/:target',
+        component: () => import('./views/publish')
+      },
+      {
         path: 'publish',
         component: () => import('./views/publish')
-      }, {
+      },
+      {
+        // 内容列表
         path: 'articles',
         component: () => import('./views/article')
-      }, {
+      },
+      {
+        // 评论列表
         path: 'comment', //  两种写法都可以
-        // path: 'comment',
         component: () => import('./views/comment')
       }, {
+        // 素材列表
         path: 'material',
         component: () => import('./views/material')
       }, {
         path: '/home/fans'
       }, {
-        path: '/home/account'
+        // 账户信息
+        path: 'account',
+        component: () => import('./views/account')
       }]
     },
     {

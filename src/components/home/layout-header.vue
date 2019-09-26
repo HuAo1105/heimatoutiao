@@ -26,6 +26,7 @@
   </el-row>
 </template>
 <script>
+import eventBus from '../../utils/event-bus'
 export default {
   data () {
     return {
@@ -49,15 +50,16 @@ export default {
         this.$router.push('/login')
       }
     },
+    // 获取用户信息
     loadData () {
-      let token = window.localStorage.getItem('user-token')
+      // let token = window.localStorage.getItem('user-token')
       // console.log(token)
       this.$axios({
-        url: '/user/profile',
+        url: '/user/profile'
         // 请求方式为get
         // 请求参数
         // Bearer后边的空格不能少
-        headers: { Authorization: `Bearer ${token}` }
+        // headers: { Authorization: `Bearer ${token}` }
       }).then(result => {
         // console.log(result)
         // 请求到了数据，然后将值赋到上边去
@@ -67,6 +69,9 @@ export default {
   },
   created () {
     this.loadData()
+    eventBus.$on('updateUserInfo', () => {
+      this.loadData()
+    })
   }
 }
 </script>
