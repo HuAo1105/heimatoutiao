@@ -49,6 +49,7 @@
 </template>
 
 <script>
+import { deleteAll, collectOrCancle, uploadImg, getMaterial } from '../../api/articles'
 export default {
   data () {
     return {
@@ -64,42 +65,26 @@ export default {
   },
   methods: {
     // 删除图片素材
-    delImg (id) {
-      this.$confirm('您确定要该图片吗？').then(() => {
-        this.$axios({
-          url: `/user/images/${id}`,
-          method: 'delete'
-        }).then(result => {
-          this.getData()
-        })
-      })
+    async delImg (id) {
+      await this.$confirm('您确定要该图片吗？')
+      await deleteAll(id)
+      this.getData()
     },
     // 取消收藏
-    collectOrCancel (item) {
+    async collectOrCancel (item) {
       let mess = item.is_collected ? '取消' : ''
-      this.$confirm(`您确定要${mess}收藏该图片吗`).then(() => {
-        this.$axios({
-          url: `/user/images/${item.id}`,
-          method: 'put',
-          data: { collect: !item.is_collected }
-        }).then(() => {
-          this.getData()
-        })
-      })
+      await this.$confirm(`您确定要${mess}收藏该图片吗`)
+      await collectOrCancle(item)
+      this.getData()
     },
     // 上传图片
-    uploadImg (params) {
-      console.log(params)
+    async uploadImg (params) {
+      // console.log(params)
       // 由于得上传文件，所以要使用new FormData
       let data = new FormData()
       data.append('image', params.file)
-      this.$axios({
-        url: '/user/images',
-        method: 'post',
-        data
-      }).then(() => {
-        this.getData()
-      })
+      await uploadImg(data)
+      this.getData()
     },
     current (newPage) {
       // console.log(newPage)
@@ -111,19 +96,16 @@ export default {
       this.getData()
     },
     // 获取数据
-    getData () {
+    async getData (currentPage, pageSize, activeName) {
+      // console.log(activeName)
       this.loading = true
-      this.$axios({
-        url: '/user/images',
-        params: { page: this.pagination.currentPage, per_page: this.pagination.pageSize, collect: this.activeName === 'select' }
-      }).then(result => {
-        // debugger
-        // console.log(result)
-        this.list = result.data.results
-        // console.log(this.list)
-        this.pagination.total = result.data.total_count
-        this.loading = false
-      })
+      let result = await getMaterial(this.pagination.currentPage, this.pagination.pageSize, this.activeName)
+      // debugger
+      // console.log(result)
+      this.list = result.data.results
+      // console.log(this.list)
+      this.pagination.total = result.data.total_count
+      this.loading = false
     }
   },
   created () {

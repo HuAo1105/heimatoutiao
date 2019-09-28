@@ -10,12 +10,12 @@ import axios from './utils/axios-config'
 import Component from './components'
 
 // 给vue的原型对象加一个属性，使得在全局都可以使用，所有的组件可以直接使用
-// Vue.prototype.$axios = axios
+Vue.prototype.$axios = axios
 Vue.config.productionTip = false
 
 Vue.use(ElementUI) // 在全局注册了elementui
 Vue.use(Component) // 在全局注册了普通组件，就不用在路由级组件中引入了
-Vue.use(axios)
+// Vue.use(axios)
 new Vue({
   router,
   render: h => h(App)

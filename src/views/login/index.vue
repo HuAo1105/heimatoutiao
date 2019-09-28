@@ -17,7 +17,7 @@
                   <el-checkbox v-model='formdata.agree'>我已阅读并同意用户协议和隐私条款</el-checkbox>
               </el-form-item>
               <el-form-item>
-                  <el-button @click='login' type="primary" style="width:100%">登陆</el-button>
+                  <el-button @click='login(formdata)' type="primary" style="width:100%">登陆</el-button>
               </el-form-item>
           </el-form>
       </el-card>
@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import { login } from '../../api/articles'
 export default {
   data () {
     let validator = function (rule, value, callBack) {
@@ -59,19 +60,14 @@ export default {
     }
   },
   methods: {
-    login () {
-      this.$refs.mylogin.validate((isOk) => {
+    async login (formdata) {
+      await this.$refs.mylogin.validate(async (isOk) => {
         if (isOk) {
-          this.$axios({
-            url: '/authorizations',
-            method: 'post',
-            data: this.formdata
-          }).then(result => {
-            // console.log(result)
-            // 将token令牌保存在localstorage里
-            window.localStorage.setItem('user-token', result.data.token)
-            this.$router.push('/')
-          })
+          let result = await login(formdata)
+          // console.log(result)
+          // 将token令牌保存在localstorage里
+          window.localStorage.setItem('user-token', result.data.token)
+          this.$router.push('/')
           // .catch(() => {
           //   this.$message({
           //     type: 'warning',

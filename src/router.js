@@ -3,7 +3,10 @@ import Router from 'vue-router'
 import Home from './views/home'
 import Login from './views/login'
 import Main from './views/home/main'
-
+const originalPush = Router.prototype.push
+Router.prototype.push = function push (location) {
+  return originalPush.call(this, location).catch(err => err)
+}
 Vue.use(Router)
 
 export default new Router({
@@ -12,6 +15,10 @@ export default new Router({
     {
       path: '/',
       redirect: '/home'
+    },
+    {
+      path: '*', // 匹配所有的组件，但是如果添加了路由的话，优先匹配添加了路由的
+      component: () => import('./views/404')
     },
     {
       path: '/home',
@@ -42,7 +49,9 @@ export default new Router({
         path: 'material',
         component: () => import('./views/material')
       }, {
-        path: '/home/fans'
+        // 图文数据
+        path: 'gradata',
+        component: () => import('./views/fans')
       }, {
         // 账户信息
         path: 'account',

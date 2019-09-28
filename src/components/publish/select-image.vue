@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import { getImage, uploadImgs } from '../../api/articles'
 export default {
   data () {
     return {
@@ -45,34 +46,28 @@ export default {
     }
   },
   methods: {
+    // handleClick (tab, event) {
+    //   console.log(tab, event)
+    // },
     // 切换当前页
     changePage (newPage) {
       this.page.currentPage = newPage
       this.getImage()
     },
     // 获取素材
-    getImage () {
-      this.$axios({
-        url: '/user/images',
-        params: { page: this.page.currentPage, per_page: this.page.pageSize }
-      }).then(result => {
-        // debugger
-        this.list = result.data.results
-        this.page.total = result.data.total_count
-      })
+    async getImage (currentPage, pageSize) {
+      let result = await getImage(this.page.currentPage, this.page.pageSize)
+      // debugger
+      this.list = result.data.results
+      this.page.total = result.data.total_count
     },
     // 上传图片
-    uploadImg (params) {
+    async uploadImg (params) {
       let data = new FormData()
       data.append('image', params.file)
-      this.$axios({
-        url: '/user/images',
-        method: 'post',
-        data
-      }).then(result => {
-        // alert('上传成功')
-        this.$message({ message: '上传成功', type: 'success' })
-      })
+      await uploadImgs()
+      // alert('上传成功')
+      this.$message({ message: '上传成功', type: 'success' })
     },
     // 点击图片传给父组件
     transImg (item) {

@@ -27,6 +27,7 @@
 </template>
 <script>
 import eventBus from '../../utils/event-bus'
+import { getProfile } from '../../api/articles'
 export default {
   data () {
     return {
@@ -51,20 +52,17 @@ export default {
       }
     },
     // 获取用户信息
-    loadData () {
+    async loadData () {
       // let token = window.localStorage.getItem('user-token')
       // console.log(token)
-      this.$axios({
-        url: '/user/profile'
-        // 请求方式为get
-        // 请求参数
-        // Bearer后边的空格不能少
-        // headers: { Authorization: `Bearer ${token}` }
-      }).then(result => {
-        // console.log(result)
-        // 请求到了数据，然后将值赋到上边去
-        this.formdata = result.data
-      })
+      let result = await getProfile()
+      // 请求方式为get
+      // 请求参数
+      // Bearer后边的空格不能少
+      // headers: { Authorization: `Bearer ${token}` }
+      // console.log(result)
+      // 请求到了数据，然后将值赋到上边去
+      this.formdata = result.data
     }
   },
   created () {

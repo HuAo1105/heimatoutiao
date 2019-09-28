@@ -22,21 +22,22 @@
       <el-form-item prop='images'>
       </el-form-item>
       <!-- 封面组件 -->
-      <cover-image :images='formData.cover.images' @selectImg="receiveImg"></cover-image>
+      <cover-image :images='formData.cover.images' @selectImg="receiveImg" v-if='trueOrFalse'></cover-image>
       <el-form-item label='频道' prop='channel_id'>
         <el-select v-model="formData.channel_id" placeholder="请选择">
           <el-option v-for='(item,index) in channels' :key='index' :value='item.id' :label='item.name'>{{item.name}}</el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
-          <el-button type='primary' @click='publishArticle(false)'>发表</el-button>
-          <el-button @click='publishArticle(true)'>存为草稿</el-button>
+          <el-button type='primary' @click='publishArticle(false,formData)'>发表</el-button>
+          <el-button @click='publishArticle(true,formData)'>存为草稿</el-button>
       </el-form-item>
     </el-form>
   </el-card>
 </template>
 
 <script>
+import { getChannels, getArticle, publishArticles } from '../../api/articles'
 export default {
   data () {
     return {
@@ -61,37 +62,25 @@ export default {
   },
   methods: {
     // 获取频道列表
-    getChannels () {
-      this.$axios({
-        url: '/channels'
-      }).then(result => {
-        this.channels = result.data.channels
-      })
+    async getChannels () {
+      let result = await getChannels()
+      this.channels = result.data.channels
     },
     // 获取指定文章内容
-    getArticle () {
+    async getArticle () {
       let { target } = this.$route.params
       // console.log(this.$route.params)
-      this.$axios({
-        url: `/articles/${target}`
-      }).then(result => {
-        this.formData = result.data
-      })
+      let result = await getArticle(target)
+      this.formData = result.data
     },
     // 手动校验并发布
-    publishArticle (draft) {
-      this.$refs.form.validate((isOk) => {
+    async publishArticle (draft, formData) {
+      await this.$refs.form.validate(async (isOk) => {
         if (isOk) {
           let { target } = this.$route.params
           // console.log(target)
-          this.$axios({
-            url: target ? `/articles/${target}` : '/articles',
-            method: target ? 'put' : 'post',
-            params: { draft },
-            data: this.formData
-          }).then(() => {
-            this.$router.push('/home/articles')
-          })
+          await publishArticles(draft, formData, target)
+          this.$router.push('/home/articles')
         }
       })
     },
@@ -118,6 +107,15 @@ export default {
         this.formData.cover.images = ['', '', '']
       } else {
         this.formData.cover.images = []
+      }
+    }
+  },
+  computed: {
+    trueOrFalse () {
+      if (this.formData.cover.type === 1 || this.formData.cover.type === 3) {
+        return true
+      } else {
+        return false
       }
     }
   },

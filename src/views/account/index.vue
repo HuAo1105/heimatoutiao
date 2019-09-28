@@ -17,7 +17,7 @@
         <el-input disabled v-model="formData.mobile" style="width:300px"></el-input>
       </el-form-item>
       <el-form-item>
-        <div @click='modify'>
+        <div @click='modify(formData)'>
           <el-button type='primary'>保存信息</el-button>
         </div>
       </el-form-item>
@@ -40,6 +40,8 @@
 
 <script>
 import eventBus from '../../utils/event-bus'
+import { getUser, modify, changePhoto } from '../../api/articles'
+
 export default {
   data () {
     return {
@@ -59,43 +61,30 @@ export default {
   },
   methods: {
     // 获取用户信息
-    getUser () {
-      this.$axios({
-        url: '/user/profile'
-      }).then(result => {
-        this.formData = result.data
-      })
+    async getUser () {
+      let result = await getUser()
+      this.formData = result.data
     },
     // 修改用户信息
-    modify () {
-      this.$refs.form.validate((isOk) => {
+    async modify (formData) {
+      await this.$refs.form.validate(async (isOk) => {
         if (isOk) {
-          this.$axios({
-            url: '/user/profile',
-            method: 'patch',
-            data: this.formData
-          }).then(() => {
-            // 在保存的时候抛出一个事件
-            eventBus.$emit('updateUserInfo')
-            this.$message({ message: '修改成功', type: 'success' })
-          })
+          await modify(formData)
+          // 在保存的时候抛出一个事件
+          eventBus.$emit('updateUserInfo')
+          this.$message({ message: '修改成功', type: 'success' })
         }
       })
     },
     // 上传头像
-    uploadPhoto (params) {
+    async uploadPhoto (params) {
       let data = new FormData()
       data.append('photo', params.file)
-      this.$axios({
-        url: '/user/photo',
-        method: 'patch',
-        data
-      }).then(() => {
-        eventBus.$emit('updateUserInfo')
-        this.$message({ message: '修改成功', type: 'success' })
-        this.getUser()
-        this.dialogVisible = false
-      })
+      await changePhoto(data)
+      eventBus.$emit('updateUserInfo')
+      this.$message({ message: '修改成功', type: 'success' })
+      this.getUser()
+      this.dialogVisible = false
     }
   },
   created () {

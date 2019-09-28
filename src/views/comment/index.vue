@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import { openOrClose, getComments } from '../../api/articles'
 export default {
   data () {
     return {
@@ -50,40 +51,33 @@ export default {
     }
   },
   methods: {
-    openOrclose (row) {
+    async openOrclose (row) {
       // 通过判断来做相应的操作
       // console.log(row.id)
       let mess = row.comment_status ? '关闭' : '打开'
-      this.$confirm(`此操作将${mess}该文件, 是否继续?`, {
+      await this.$confirm(`此操作将${mess}该文件, 是否继续?`, {
         type: 'warning'
-      }).then(() => {
-        this.$axios({
-          url: '/comments/status',
-          method: 'put',
-          params: { article_id: row.id.toString() }, // params为路径参数，对应的是query参数
-          data: { allow_comment: !row.comment_status } // 原来是关闭的，给打开；原来是打开的，给关闭
-        }).then(() => {
-          this.getData() // 成功之后重新拉取数据
-        })
       })
+      await openOrClose(row)
+      this.getData() // 成功之后重新拉取数据
     },
     currentPage (newPage) {
       this.pagination.currentPage = newPage
       // console.log(this.pagination.currentPage)
       this.getData()
     },
-    getData () {
+    // 获取评论内容
+    async getData (pageSize, currentPage) {
+      // console.log(this.pagination.pageSize)
+      // console.log(currentPage)
+
       this.loading = true
-      this.$axios({
-        url: '/articles',
-        params: { response_type: 'comment', per_page: this.pagination.pageSize, page: this.pagination.currentPage }
-      }).then(result => {
-        // console.log(result.data)
-        this.formdata = result.data.results
-        // 有了总页数
-        this.pagination.total = result.data.total_count
-        this.loading = false
-      })
+      let result = await getComments(this.pagination.pageSize, this.pagination.currentPage)
+      // console.log(result.data)
+      this.formdata = result.data.results
+      // 有了总页数
+      this.pagination.total = result.data.total_count
+      this.loading = false
     },
     // 因为评论状态是布尔值，所以需要用formatter来格式化内容
     // row代表行数据

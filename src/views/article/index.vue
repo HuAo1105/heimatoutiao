@@ -75,6 +75,7 @@
 </template>
 
 <script>
+import { delArticle, getAticels, getChannels } from '../../api/articles'
 export default {
   data () {
     return {
@@ -125,37 +126,25 @@ export default {
       this.getAticels(params)
     },
     // 删除文章
-    delArticle (id) {
-      this.$confirm('您确定要删除吗？').then(() => {
-        this.$axios({
-          url: `/articles/${id.toString()}`,
-          method: 'delete'
-        }).then(() => {
-          this.getAticels()
-        })
-      })
+    async delArticle (id) {
+      await this.$confirm('您确定要删除吗？')
+      await delArticle(id)
+      this.getAticels()
     },
     // 获取文章列表
-    getAticels (params) {
+    async getAticels (params) {
       this.loading = true
-      this.$axios({
-        url: '/articles',
-        params
-      }).then(result => {
-        // console.log(result)
-        this.list = result.data.results
-        this.page.total = result.data.total_count
-        this.loading = false
-      })
+      let result = await getAticels(params)
+      // console.log(result)
+      this.list = result.data.results
+      this.page.total = result.data.total_count
+      this.loading = false
     },
     // 获取频道
-    getChannels () {
-      this.$axios({
-        url: '/channels'
-      }).then(result => {
-        // console.log(result)
-        this.channels = result.data.channels
-      })
+    async getChannels () {
+      let result = await getChannels()
+      // console.log(result)
+      this.channels = result.data.channels
     },
     // 修改文章
     modifyArticle (id) {

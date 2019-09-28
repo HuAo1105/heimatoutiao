@@ -1,5 +1,5 @@
 import axios from 'axios'
-import vue from 'vue'
+// import vue from 'vue'
 import router from '../permission' // 引入router，所以下边可以直接使用router
 import { Message } from 'element-ui'
 import jsonBigint from 'json-bigint' // 引入处理最大安全值的第三方模块
@@ -65,11 +65,11 @@ axios.interceptors.response.use(function (response) {
   // 因为返回的这个对象没有reject是一个空，所以后边的catch不执行
   return new Promise(function () {})
 })
-// export default axios
-export default {
-  install () {
-    // axios上的东西，包括请求拦截和响应拦截都挂到了vue的原型对象上
-    // 所以在main.js中 vue.use(axios) 调用这个install方法，在组件中直接使用this.$axios就可以
-    vue.prototype.$axios = axios
-  }
-}
+export default axios
+// export default {
+//   install () {
+//     // axios上的东西，包括请求拦截和响应拦截都挂到了vue的原型对象上
+//     // 所以在main.js中 vue.use(axios) 调用这个install方法，在组件中直接使用this.$axios就可以
+//     vue.prototype.$axios = axios
+//   }
+// }
